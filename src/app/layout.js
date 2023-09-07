@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import './globals.css'
 
 export const metadata = {
@@ -5,22 +6,25 @@ export const metadata = {
   description: 'Hong Wang yeul',
 }
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const resp = await fetch('http://localhost:9999/topics');
+  const topics = await resp.json();
+
+
   return (
     <html>
       <body>
-        <h1><a href="/">WEB</a></h1>
+        <h1><Link href="/">WEB</Link></h1>
         <ol>
-          <li><a href="/read/1">html</a></li>
-          <li><a href="/read/2">CSS</a></li>
+          {topics.map((topic) => {
+            return <li key={topic.id}><Link href={`/read/${topic.id}`}>{topic.title}</Link></li>
+          })}
         </ol>
         {children}
         <ul>
-          <li>
-            <a href="/create">Create</a>
-            <li><a href="/update/1">Update</a></li>
-            <li><input type="button" value='delete' /></li>
-          </li>
+          <li><Link href="/create">Create</Link></li>
+          <li><Link href="/update/1">Update</Link></li>
+          <li><input type="button" value='delete' /></li>
         </ul>
       </body>
     </html>
